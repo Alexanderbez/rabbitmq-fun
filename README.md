@@ -49,3 +49,23 @@ And, lets have our producer throw some 'work' onto the queue:
 ```shell
 $ bundle exec ruby producer.rb
 ```
+
+## Part 3
+
+Here we learn about exchanges. Opposed to having a producer directly put messages onto a queue, we're using an exchange protocol that will be responsible for telling where the messages to go and what to do. This allows use to have the messages goto multiple consumers at the same time. This simulates more of a real-world use case.
+
+We're going to simulate logging events here.
+
+Lets have __two__ consumers running to recieve these logs:
+
+```shell
+$ bundle exec ruby log_gobbler.rb
+```
+
+Now lets have some logging events emitted:
+
+```shell
+$ bundle exec ruby logger.rb
+```
+
+You'll notice both log consumers (gobblers) will recieve the same events. That's because we're using a `fanout` exchange. The exchange protocol tells each queue that has a `binding` to the exchange to consume the message.
