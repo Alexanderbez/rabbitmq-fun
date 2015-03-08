@@ -24,13 +24,12 @@ queue = channel.queue('bunny_queue_1')
 puts "Waiting for messages to be published in queue: #{queue.name}..."
 
 # Subscribe to our queue (while blocking)
-queue.subscribe(block: true) do |delivery_info, props, data|
-  puts "Consuming work: #{JSON.parse(data)}"
-
-  # Cancel the consumer to exit
-  delivery_info.consumer.cancel
+begin
+  queue.subscribe(block: true) do |delivery_info, props, data|
+    puts "Consuming work: #{JSON.parse(data)}"
+  end
+rescue Exception, Interrupt => _
+  # Close our connection
+  puts 'Closing connection...'
+  conn.close
 end
-
-# Close our connection
-puts 'Closing connection...'
-conn.close
