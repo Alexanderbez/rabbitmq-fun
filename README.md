@@ -69,3 +69,24 @@ $ bundle exec ruby logger.rb
 ```
 
 You'll notice both log consumers (gobblers) will recieve the same events. That's because we're using a `fanout` exchange. The exchange protocol tells each queue that has a `binding` to the exchange to consume the message.
+
+## Part 4
+
+Learning more about different types of exchanges. Unlike Part 3, here we do not want each queue to recieve each message. Rather, we assign a 'routing_key' to both the exchange and queue (per message basis) that will determine what queue(s) pick up the messages.
+
+
+Lets have __two__ consumers running to recieve logs. However, each reciever will only listen for messages that pertain to a specific level:
+
+```shell
+$ LOG=info,debug bundle exec ruby log_gobbler.rb
+```
+
+```shell
+$ LOG=warn,error bundle exec ruby log_gobbler.rb
+```
+
+Now lets have some logging events emitted:
+
+```shell
+$ bundle exec ruby logger.rb
+```
